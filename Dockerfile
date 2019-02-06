@@ -1,11 +1,14 @@
 ### configuration of docker image for Quokka FPGA toolkit integration with RISC-V
  
 FROM ubuntu:bionic
+SHELL ["/bin/bash", "-c"]
+
+### image prep
+RUN apt-get update
+RUN apt-get install -y wget gnupg apt-utils git sudo
 
 ### install webmin
-RUN apt-get update
 RUN echo deb http://download.webmin.com/download/repository sarge contrib >> /etc/apt/sources.list
-RUN apt-get install -y wget gnupg
 RUN wget http://www.webmin.com/jcameron-key.asc
 RUN apt-key add jcameron-key.asc
 RUN rm /etc/apt/apt.conf.d/docker-gzip-indexes
@@ -30,18 +33,14 @@ RUN rm -rf /tmp/dotnet-installer
 
 ### install picorv32 and RISC-V toolchain 
 # https://github.com/cliffordwolf/picorv32#building-a-pure-rv32i-toolchain
-RUN apt-get install -y git sudo
-
 RUN apt-get install -y \
 		autoconf automake autotools-dev curl libmpc-dev \
         libmpfr-dev libgmp-dev gawk build-essential bison flex texinfo \
-		gperf libtool patchutils bc zlib1g-dev git libexpat1-dev
+		gperf libtool patchutils bc zlib1g-dev libexpat1-dev
 
 RUN git clone https://github.com/cliffordwolf/picorv32.git
-RUN cd picorv32
-RUN make download-tools
-RUN yes | make -j$(nproc) build-riscv32imc-tools
-RUN cd /
+RUN cd /picorv32 && make download-tools
+RUN cd /picorv32 && yes | make -j$(nproc) build-riscv32imc-tools
 
 # cleanup
 RUN rm -rf /var/cache/distfiles/riscv*
@@ -50,10 +49,7 @@ RUN rm -rf /picorv32/riscv*
 ### TynyFPGA-BX repo for reference
 RUN git clone https://github.com/tinyfpga/TinyFPGA-BX.git
 
-### add path to toolchain into PATH
-RUN source /etc/environment
-RUN rm -rf /etc/environment
-RUN echo PATH=\"$PATH:/opt/riscv32imc/bin\" >> /etc/environment
-RUN source /etc/environment
+### add RISCV toolchain into PATH
+RUN source /etc/environment && rm -rf /etc/environment && echo PATH=\"$PATH:/opt/riscv32imc/bin\" >> /etc/environment && source /etc/environment
 
 CMD ["/bin/bash"]
