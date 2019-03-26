@@ -52,4 +52,13 @@ RUN git clone https://github.com/tinyfpga/TinyFPGA-BX.git
 ### add RISCV toolchain into PATH
 RUN source /etc/environment && rm -rf /etc/environment && echo PATH=\"$PATH:/opt/riscv32imc/bin\" >> /etc/environment && source /etc/environment
 
+
+# configure Quokka integration server
+RUN git clone https://github.com/EvgenyMuryshkin/Quokka.RISCV.Docker.Server.git
+RUN cp -r /Quokka.RISCV.Docker.Server/scripts/. /
+RUN chmod 766 ./update ./launch
+RUN ./update
+
+EXPOSE 10000 15000
+
 CMD ["/bin/bash"]
