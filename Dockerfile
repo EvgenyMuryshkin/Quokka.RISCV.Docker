@@ -8,7 +8,7 @@ RUN apt-get update
 RUN apt-get install -y wget gnupg apt-utils git sudo
 
 ### install webmin
-RUN echo deb http://download.webmin.com/download/repository sarge contrib >> /etc/apt/sources.list
+RUN echo deb https://download.webmin.com/download/repository sarge contrib >> /etc/apt/sources.list
 RUN wget http://www.webmin.com/jcameron-key.asc
 RUN apt-key add jcameron-key.asc
 RUN rm /etc/apt/apt.conf.d/docker-gzip-indexes
