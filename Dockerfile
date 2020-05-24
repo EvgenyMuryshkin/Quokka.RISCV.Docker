@@ -7,7 +7,7 @@ SHELL ["/bin/bash", "-c"]
 RUN apt-get update
 RUN apt-get install -y wget gnupg apt-utils git sudo
 
-### install webmin
+### install webmin, this is optional tool, remote access to Docker\WSL can be setup differently, e.g. with VS Code
 RUN echo deb https://download.webmin.com/download/repository sarge contrib >> /etc/apt/sources.list
 RUN wget http://www.webmin.com/jcameron-key.asc
 RUN apt-key add jcameron-key.asc
@@ -19,14 +19,16 @@ RUN apt-get -y install apt-show-versions webmin
 RUN /etc/init.d/webmin restart
 RUN /usr/share/webmin/changepass.pl /etc/webmin root root
 
-### install .NET Core 2.2
+### install .NET Core
+#### please refer to official guide for your OS
+#### https://docs.microsoft.com/en-us/dotnet/core/install/
 RUN wget -q https://packages.microsoft.com/config/ubuntu/18.04/packages-microsoft-prod.deb
 RUN dpkg -i packages-microsoft-prod.deb
 RUN apt-get install -y software-properties-common
 RUN add-apt-repository universe
 RUN apt-get install -y apt-transport-https
 RUN apt-get update
-RUN apt-get install -y dotnet-sdk-2.2
+RUN apt-get install -y dotnet-sdk-3.1
 
 # cleanup
 RUN rm -rf /tmp/dotnet-installer
@@ -38,13 +40,16 @@ RUN apt-get install -y \
         libmpfr-dev libgmp-dev gawk build-essential bison flex texinfo \
 		gperf libtool patchutils bc zlib1g-dev libexpat1-dev
 
+# place all stuff in home folder
+RUN cd ~
+
 RUN git clone https://github.com/cliffordwolf/picorv32.git
-RUN cd /picorv32 && make download-tools
-RUN cd /picorv32 && yes | make -j$(nproc) build-riscv32imc-tools
+RUN cd ./picorv32 && make download-tools
+RUN cd ./picorv32 && yes | make -j$(nproc) build-riscv32imc-tools
 
 # cleanup
 RUN rm -rf /var/cache/distfiles/riscv*
-RUN rm -rf /picorv32/riscv*
+RUN rm -rf ./picorv32/riscv*
 
 ### TynyFPGA-BX repo for reference
 RUN git clone https://github.com/tinyfpga/TinyFPGA-BX.git
@@ -54,11 +59,13 @@ RUN source /etc/environment && rm -rf /etc/environment && echo PATH=\"$PATH:/opt
 
 
 # configure Quokka integration server
+RUN cd ~
 RUN git clone https://github.com/EvgenyMuryshkin/Quokka.RISCV.Docker.Server.git
-RUN cp -r /Quokka.RISCV.Docker.Server/scripts/. /
+RUN cp -r ./Quokka.RISCV.Docker.Server/scripts/. ./
 RUN chmod 766 ./update ./launch
 RUN ./update
 
+# expose integration port, not required for WSL
 EXPOSE 10000 15000
 
 CMD ["/bin/bash"]
