@@ -4,6 +4,10 @@ FROM ubuntu:focal
 SHELL ["/bin/bash", "-c"]
 
 ### image prep
+RUN apt-get update
+RUN apt-get install -y wget gnupg apt-utils git sudo
+
+### qrs indtall
 RUN cd ~ && git clone https://github.com/EvgenyMuryshkin/Quokka.RISCV.Server.git qrs
 RUN cd ~/qrs && chmod 766 ./install 
 RUN cd ~/qrs && ./install
