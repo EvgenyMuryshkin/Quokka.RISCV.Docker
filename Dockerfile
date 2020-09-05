@@ -4,6 +4,7 @@ FROM ubuntu:focal
 SHELL ["/bin/bash", "-c"]
 
 ### image prep
+ENV DEBIAN_FRONTEND=noninteractive 
 RUN apt-get update
 RUN apt-get install -y wget gnupg apt-utils git sudo
 
