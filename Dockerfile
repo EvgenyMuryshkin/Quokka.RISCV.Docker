@@ -1,12 +1,12 @@
 ### configuration of docker image for Quokka FPGA toolkit integration with RISC-V
  
-FROM ubuntu:focal
+FROM ubuntu:bionic
 SHELL ["/bin/bash", "-c"]
 
 ### image prep
 ENV DEBIAN_FRONTEND=noninteractive 
 RUN apt-get update
-RUN apt-get install -y wget gnupg apt-utils git sudo
+RUN apt-get install -y wget gnupg apt-utils git sudo lsb-release
 
 ### qrs indtall
 RUN cd ~ && git clone https://github.com/EvgenyMuryshkin/Quokka.RISCV.Server.git qrs
