@@ -1,0 +1,1 @@
+docker run --rm -p 15000:15000 -it quokka.riscv5:rookie bash -c ~/launch
