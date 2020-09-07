@@ -1,1 +1,1 @@
-docker build . -t quokka.riscv5:rookie
+docker build . -t evgenymuryshkin/quokka-riscv:rookie
