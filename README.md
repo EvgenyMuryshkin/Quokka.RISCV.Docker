@@ -5,3 +5,4 @@ Docker configuration for RISCV integration with Quokka.FPGA
 * .NET Core 3.1
 * PicoRV32 repo
 * RISCV toolchain (riscv32imc)
+* Quokka RISCV Integration Server
